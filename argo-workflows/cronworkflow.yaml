@@ -1,0 +1,63 @@
+apiVersion: argoproj.io/v1alpha1
+kind: CronWorkflow
+metadata:
+  name: terraform-drift-detector
+  namespace: terraform-drift  # Update with your namespace
+spec:
+  # Cron schedule - runs daily at 6 AM UTC by default
+  # Update this based on your needs
+  schedule: "0 6 * * *"
+
+  # Replace previous runs if still running
+  concurrencyPolicy: "Replace"
+
+  # Start immediately if missed schedule
+  startingDeadlineSeconds: 0
+
+  workflowSpec:
+    entrypoint: drift-detection
+
+    # Service account with permissions to access secrets and AWS
+    serviceAccountName: terraform-drift-sa
+
+    # Optional: Node selector for dedicated nodes
+    # nodeSelector:
+    #   role: "terraform-drift"
+
+    # Optional: Tolerations for dedicated nodes
+    # tolerations:
+    #   - key: "role"
+    #     value: "terraform-drift"
+    #     operator: "Equal"
+    #     effect: "NoSchedule"
+
+    templates:
+      - name: drift-detection
+        steps:
+          # Step 1: Run drift detection
+          - - name: detect-drift
+              continueOn:
+                failed: true
+              templateRef:
+                name: terraform-drift-base-template
+                template: terraform-drift-base-template
+              arguments:
+                parameters:
+                  - name: step-command
+                    value: "/tmp/scripts/detect-drift.sh full"
+
+          # Step 2: Send failure notification if Step 1 failed
+          - - name: failure-notification
+              when: "{{steps.detect-drift.status}} == Failed"
+              continueOn:
+                failed: true
+              templateRef:
+                name: terraform-drift-base-template
+                template: terraform-drift-base-template
+              arguments:
+                parameters:
+                  - name: step-command
+                    value: |
+                      curl -X POST -H "Content-type: application/json" \
+                        --data '{"text": "⚠️ Terraform Drift Detection workflow failed! <!channel>"}' \
+                        $SLACK_WEBHOOK

@@ -1,0 +1,107 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: terraform-drift-base-template
+  namespace: terraform-drift  # Update with your namespace
+spec:
+  templates:
+    - name: terraform-drift-base-template
+      container:
+        image: "your-image"
+        command: ["sh", "-c"]
+        args: ["{{inputs.parameters.step-command}}"]
+        imagePullPolicy: Always
+
+        resources:
+          requests:
+            cpu: "2"
+            memory: "2Gi"
+          limits:
+            cpu: "7"
+            memory: "8Gi"
+
+        env:
+          # Slack Configuration
+          - name: SLACK_WEBHOOK
+            valueFrom:
+              secretKeyRef:
+                name: terraform-drift-secrets
+                key: SLACK_WEBHOOK_URL
+
+          # GitHub Configuration
+          - name: GITHUB_APP_ID
+            valueFrom:
+              secretKeyRef:
+                name: terraform-drift-secrets
+                key: GITHUB_APP_ID
+
+          - name: GITHUB_ORG
+            valueFrom:
+              secretKeyRef:
+                name: terraform-drift-secrets
+                key: GITHUB_ORG
+
+          - name: GITHUB_REPO
+            valueFrom:
+              secretKeyRef:
+                name: terraform-drift-secrets
+                key: GITHUB_REPO
+
+          - name: TERRAFORM_PATH
+            valueFrom:
+              configMapKeyRef:
+                name: terraform-drift-config
+                key: TERRAFORM_PATH
+                optional: true
+
+          # AWS Configuration
+          - name: AWS_REGION
+            value: "us-east-1"  # Update with your region
+
+          - name: BEDROCK_REGION
+            value: "us-east-1"  # Update with your Bedrock region
+
+          - name: BEDROCK_MODEL_ID
+            valueFrom:
+              configMapKeyRef:
+                name: terraform-drift-config
+                key: BEDROCK_MODEL_ID
+                optional: true
+
+          # Drift Configuration
+          - name: DRIFT_THRESHOLD
+            valueFrom:
+              configMapKeyRef:
+                name: terraform-drift-config
+                key: DRIFT_THRESHOLD
+                optional: true
+
+          - name: GITHUB_PRIVATE_KEY_PATH
+            value: "/tmp/github-app-private-key.pem"
+
+        volumeMounts:
+          # Terraform plugin cache for faster execution
+          - mountPath: "/tmp/.terraform.d/plugin-cache"
+            name: terraform-cache
+
+          # GitHub App private key
+          - name: github-key
+            mountPath: "/tmp/github-app-private-key.pem"
+            subPath: github-app-private-key
+            readOnly: true
+
+      volumes:
+        - name: terraform-cache
+          persistentVolumeClaim:
+            claimName: terraform-drift-pvc
+
+        - name: github-key
+          secret:
+            secretName: terraform-drift-secrets
+            items:
+              - key: GITHUB_APP_PRIVATE_KEY
+                path: github-app-private-key
+
+      inputs:
+        parameters:
+          - name: step-command

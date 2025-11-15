@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: terraform-drift-config
+  namespace: terraform-drift  # Update with your namespace
+data:
+  # Path to Terraform code within the repository
+  TERRAFORM_PATH: "terraform/environments"
+
+  # AWS Bedrock Model ID (generic version)
+  # Options:
+  #   - anthropic.claude-3-5-sonnet-20241022-v2:0 (Recommended)
+  #   - anthropic.claude-3-sonnet-20240229-v1:0
+  #   - anthropic.claude-3-haiku-20240307-v1:0
+  BEDROCK_MODEL_ID: "anthropic.claude-3-5-sonnet-20241022-v2:0"
+
+  # Drift threshold (only notify if changes >= this number)
+  # 0 = always notify
+  DRIFT_THRESHOLD: "0"
+
+  # Optional: Target specific Terraform modules
+  # TERRAFORM_TARGET_MODULES: "-target module.vpc -target module.eks"

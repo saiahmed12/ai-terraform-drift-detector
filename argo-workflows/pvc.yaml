@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: terraform-drift-pvc
+  namespace: terraform-drift  # Update with your namespace
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi  # Adjust size based on your Terraform provider cache needs
+  # Optional: Specify storage class
+  # storageClassName: gp3

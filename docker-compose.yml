@@ -1,0 +1,110 @@
+version: '3.8'
+
+services:
+  # Main drift detection service
+  terraform-drift-detector:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: terraform-drift-detector
+    env_file:
+      - .env
+    environment:
+      # Override with local paths if needed
+      - TERRAFORM_PATH=${TERRAFORM_PATH:-terraform/environments}
+      - DRIFT_THRESHOLD=${DRIFT_THRESHOLD:-0}
+      - BEDROCK_MODEL_ID=${BEDROCK_MODEL_ID:-anthropic.claude-3-5-sonnet-20241022-v2:0}
+    volumes:
+      # Mount GitHub App private key
+      - ${GITHUB_APP_PRIVATE_KEY_PATH:-./github-app-key.pem}:/tmp/github-app-private-key.pem:ro
+
+      # Optional: Mount local Terraform code for testing
+      # - ./local-terraform:/tmp/terraform:ro
+
+      # Optional: Terraform plugin cache for faster runs
+      - terraform-cache:/cache
+
+      # Optional: Mount AWS credentials (if not using IRSA)
+      # - ~/.aws:/root/.aws:ro
+
+    # Command to run (defaults to full drift detection)
+    command: ["/tmp/scripts/detect-drift.sh", "full"]
+
+    # Uncomment to keep container running for debugging
+    # command: ["tail", "-f", "/dev/null"]
+
+    # Resource limits (adjust based on your infrastructure size)
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+    # Network mode (use host if you need to access local services)
+    # network_mode: host
+
+  # Optional: Local testing service that runs on a schedule
+  terraform-drift-scheduled:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: terraform-drift-scheduled
+    env_file:
+      - .env
+    volumes:
+      - ${GITHUB_APP_PRIVATE_KEY_PATH:-./github-app-key.pem}:/tmp/github-app-private-key.pem:ro
+      - terraform-cache:/cache
+
+    # Run every 6 hours
+    # Note: This requires a scheduler like ofelia or you can use cron on the host
+    command: |
+      sh -c 'while true; do
+        echo "Running drift detection at $$(date)";
+        /tmp/scripts/detect-drift.sh full;
+        echo "Sleeping for 6 hours...";
+        sleep 21600;
+      done'
+
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+
+    # Uncomment to start this service
+    profiles:
+      - scheduled
+
+  # Optional: Interactive shell for debugging
+  terraform-drift-debug:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: terraform-drift-debug
+    env_file:
+      - .env
+    volumes:
+      - ${GITHUB_APP_PRIVATE_KEY_PATH:-./github-app-key.pem}:/tmp/github-app-private-key.pem:ro
+      - terraform-cache:/cache
+      - ./scripts:/tmp/scripts:ro  # Mount scripts as read-only for testing
+
+    command: ["bash"]
+    stdin_open: true
+    tty: true
+
+    # Start with: docker-compose run terraform-drift-debug
+    profiles:
+      - debug
+
+volumes:
+  # Persistent cache for Terraform providers
+  terraform-cache:
+    driver: local
+
+# Optional: Custom network
+# networks:
+#   terraform-drift:
+#     driver: bridge

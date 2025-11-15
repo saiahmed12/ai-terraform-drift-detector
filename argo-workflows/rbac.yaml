@@ -1,0 +1,53 @@
+---
+# Service Account for Terraform Drift Detection
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: terraform-drift-sa
+  namespace: terraform-drift  # Update with your namespace
+  annotations:
+    # Optional: For AWS IRSA (IAM Roles for Service Accounts)
+    # eks.amazonaws.com/role-arn: arn:aws:iam::YOUR_ACCOUNT_ID:role/terraform-drift-role
+
+---
+# Role for accessing secrets and config maps
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: terraform-drift-role
+  namespace: terraform-drift  # Update with your namespace
+rules:
+  # Allow reading secrets
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "list"]
+    resourceNames:
+      - terraform-drift-secrets
+
+  # Allow reading configmaps
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get", "list"]
+    resourceNames:
+      - terraform-drift-config
+
+  # Allow reading PVCs
+  - apiGroups: [""]
+    resources: ["persistentvolumeclaims"]
+    verbs: ["get", "list"]
+
+---
+# RoleBinding to attach role to service account
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: terraform-drift-rolebinding
+  namespace: terraform-drift  # Update with your namespace
+subjects:
+  - kind: ServiceAccount
+    name: terraform-drift-sa
+    namespace: terraform-drift
+roleRef:
+  kind: Role
+  name: terraform-drift-role
+  apiGroup: rbac.authorization.k8s.io
